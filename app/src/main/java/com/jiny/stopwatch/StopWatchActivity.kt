@@ -16,6 +16,15 @@ class StopWatchActivity : AppCompatActivity() {
     private var lap = 1
     private val recordList: ArrayList<String> = arrayListOf()
 
+    var hour = ""
+    var minute = ""
+    var seconds = ""
+    var milliseconds = ""
+    var subhour = ""
+    var subminute = ""
+    var subseconds = ""
+    var submilliseconds = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityStopwatchBinding.inflate(layoutInflater).also {
@@ -71,22 +80,22 @@ class StopWatchActivity : AppCompatActivity() {
             val subSecondTime = (subtime / 100) % 60 // 1초
 
             // 전체시간
-            var hour = String.format("%02d", hourTime)
-            var minute = String.format("%02d", minuteTime)
-            var seconds = String.format("%02d", secondTime)
-            var milliseconds = String.format("%02d", millisecondTime)
+            hour = String.format("%02d", hourTime)
+            minute = String.format("%02d", minuteTime)
+            seconds = String.format("%02d", secondTime)
+            milliseconds = String.format("%02d", millisecondTime)
 
             // 부분시간
-            var subhour = String.format("%02d", subHourTime)
-            var subminute = String.format("%02d", subMinuteTime)
-            var subseconds = String.format("%02d", subSecondTime)
+            subhour = String.format("%02d", subHourTime)
+            subminute = String.format("%02d", subMinuteTime)
+            subseconds = String.format("%02d", subSecondTime)
 
             recordList.add("$subhour:$subminute:$subseconds")
 
 
             runOnUiThread {
                 with(binding) {
-                    allTimeHourTV.text = "$minute"
+                    allTimeHourTV.text = minute
                     allTimeMinuteTV.text = ":$seconds"
                     allTimeSecondTV.text = ":$milliseconds"
 
@@ -124,19 +133,7 @@ class StopWatchActivity : AppCompatActivity() {
 
         lapTimeIndex.text = """${lap++}"""
         recordTime.text = recordList.last()
-        allTime.text = """${String.format("%02d", (lapTime / 144000) % 24)}${
-            String.format(
-                "%02d",
-                (lapTime / 6000) % 60
-            )
-        }:${
-            String.format(
-                "%02d", (lapTime / 100) % 60
-            )
-        }"""
-
-        // 초기화 버튼 : removeAllView
-
+        allTime.text = """$hour:$minute:$seconds"""
 
         binding.lapLayout.addView(lapTimeIndex, 0)
         binding.recordValueLayout.addView(recordTime, 0)

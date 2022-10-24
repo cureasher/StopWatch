@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".StopWatchActivity">
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/allTime"
         android:layout_width="match_parent"
@@ -47,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=".00"
-            android:textSize="50sp"
+            android:textSize="70sp"
             app:layout_constraintBaseline_toBaselineOf="@+id/allTimeMinuteTV"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -102,7 +101,7 @@
             android:lineSpacingExtra="0dp"
             android:text=".00"
             android:textColor="@color/gray"
-            android:textSize="20sp"
+            android:textSize="40sp"
             app:layout_constraintBaseline_toBaselineOf="@+id/recordTimeMinuteTV"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -113,11 +112,10 @@
     <LinearLayout
         android:id="@+id/recordLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="400dp"
         android:layout_marginHorizontal="30dp"
-        android:layout_marginTop="40dp"
-        android:gravity="center_horizontal"
         android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/recordBT"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/recordTime">
@@ -166,33 +164,39 @@
             android:layout_marginVertical="10dp"
             android:background="@color/gray" />
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="6"
-            android:paddingEnd="30dp"
-            android:orientation="horizontal">
-            <LinearLayout
-                android:id="@+id/lapLayout"
-                android:layout_width="0dp"
-                android:layout_weight="2"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"/>
-            <LinearLayout
-                android:id="@+id/recordValueLayout"
-                android:layout_width="0dp"
-                android:layout_weight="2"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"/>
-            <LinearLayout
-                android:id="@+id/allTimeLayout"
-                android:layout_width="0dp"
-                android:layout_weight="2"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"/>
-        </LinearLayout>
-    </LinearLayout>
+            android:layout_height="match_parent">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="6">
+
+                <LinearLayout
+                    android:id="@+id/lapLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:orientation="vertical" />
+
+                <LinearLayout
+                    android:id="@+id/recordValueLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:orientation="vertical" />
+
+                <LinearLayout
+                    android:id="@+id/allTimeLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.5"
+                    android:orientation="vertical" />
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
     <Button
         android:id="@+id/recordBT"
         android:layout_width="wrap_content"
