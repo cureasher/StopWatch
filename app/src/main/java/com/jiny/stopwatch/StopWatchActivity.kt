@@ -1,9 +1,9 @@
 package com.jiny.stopwatch
 
 import android.os.Bundle
-import android.view.Gravity
-import android.widget.TextView
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.jiny.stopwatch.databinding.ActivityStopwatchBinding
 import java.util.*
 
@@ -14,7 +14,10 @@ class StopWatchActivity : AppCompatActivity() {
     private var isRunning = false
     private var timerTask: Timer? = null
     private var lap = 1
-    private val recordList: ArrayList<String> = arrayListOf()
+    private val recordList: MutableList<TimeRecordVO> = mutableListOf()
+
+    var recordTime = ""
+    var subRecordTime = ""
 
     var hour = ""
     var minute = ""
@@ -42,22 +45,23 @@ class StopWatchActivity : AppCompatActivity() {
                         if (time != 0) {
                             currentTapTime()
                             subtime = 0
+                            stopWatchRV.apply {
+                                adapter = StopWatchRecyclerViewAdapter(recordList)
+                                adapter?.notifyDataSetChanged()
+                            }
+
+                            Log.d("로그", recordList.toString())
                         }
                     }
                     "초기화" -> {
                         time = 0
-                        recordValueLayout.removeAllViews()
-                        lapLayout.removeAllViews()
-                        allTimeLayout.removeAllViews()
-
                         allTimeHourTV.text = "00"
                         allTimeMinuteTV.text = ":00"
-                        allTimeSecondTV.text = ":00"
+                        allTimeSecondTV.text = ".00"
                         recordTimeHourTV.text = "00"
                         recordTimeMinuteTV.text = ":00"
-                        recordTimeSecondTV.text = ":00"
+                        recordTimeSecondTV.text = ".00"
                     }
-
                 }
             }
         }
@@ -78,6 +82,7 @@ class StopWatchActivity : AppCompatActivity() {
             val subHourTime = (subtime / 144000) % 24 // 1시간
             val subMinuteTime = (subtime / 6000) % 60 // 1분
             val subSecondTime = (subtime / 100) % 60 // 1초
+            val submillisecondTime = time % 100 // 1밀리초
 
             // 전체시간
             hour = String.format("%02d", hourTime)
@@ -89,22 +94,23 @@ class StopWatchActivity : AppCompatActivity() {
             subhour = String.format("%02d", subHourTime)
             subminute = String.format("%02d", subMinuteTime)
             subseconds = String.format("%02d", subSecondTime)
+            submilliseconds = String.format("%02d", submillisecondTime)
 
-            recordList.add("$subhour:$subminute:$subseconds")
-
+            recordTime = "$hour:$minute:$seconds.$milliseconds"
+            subRecordTime = "$subhour:$subminute.$subseconds.$submilliseconds"
 
             runOnUiThread {
                 with(binding) {
-                    allTimeHourTV.text = minute
-                    allTimeMinuteTV.text = ":$seconds"
-                    allTimeSecondTV.text = ":$milliseconds"
+                    allTimeHourTV.text = hour
+                    allTimeMinuteTV.text = ":$minute"
+                    allTimeSecondTV.text = ".$seconds"
+                    allTimeMilliSecondTV.text = ".$milliseconds"
 
                     recordTimeHourTV.text = subhour
                     recordTimeMinuteTV.text = ":$subminute"
-                    recordTimeSecondTV.text = ":$subseconds"
+                    recordTimeSecondTV.text = ".$subseconds"
                 }
             }
-//            recordList.add("$minute:$seconds:$milliseconds")
         }
     }
 
@@ -115,28 +121,12 @@ class StopWatchActivity : AppCompatActivity() {
     }
 
     private fun currentTapTime() {
-        val lapTime = time
-        val lapTimeIndex = TextView(this).apply {
-            textSize = 20f
-            gravity = Gravity.CENTER
+        recordList.add(TimeRecordVO(lap++, subRecordTime, recordTime))
+        val manager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
+        with(binding.stopWatchRV) {
+            layoutManager = manager
+            adapter = StopWatchRecyclerViewAdapter(recordList)
+            adapter?.notifyDataSetChanged()
         }
-        // 체크한 시간
-        val recordTime = TextView(this).apply {
-            textSize = 20f
-            gravity = Gravity.CENTER
-        }
-        // 현재 시간
-        val allTime = TextView(this).apply {
-            textSize = 20f
-            gravity = Gravity.CENTER
-        }
-
-        lapTimeIndex.text = """${lap++}"""
-        recordTime.text = recordList.last()
-        allTime.text = """$hour:$minute:$seconds"""
-
-        binding.lapLayout.addView(lapTimeIndex, 0)
-        binding.recordValueLayout.addView(recordTime, 0)
-        binding.allTimeLayout.addView(allTime, 0)
     }
 }
