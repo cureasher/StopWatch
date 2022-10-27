@@ -27,7 +27,7 @@ class StopWatchActivity : AppCompatActivity() {
     var subminute = ""
     var subseconds = ""
     var submilliseconds = ""
-    var adapter = StopWatchRecyclerViewAdapter(recordList)
+
     lateinit var manager: LinearLayoutManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,11 +49,20 @@ class StopWatchActivity : AppCompatActivity() {
                             currentTapTime()
                             subtime = 0
                             stopWatchRV.apply {
-                                adapter = StopWatchRecyclerViewAdapter(recordList)
+                                val maxRecordTime =
+                                    recordList.maxBy(TimeRecordVO::recordTime)!!.recordTime
+                                val minRecordTime =
+                                    recordList.minBy(TimeRecordVO::recordTime)!!.recordTime
+                                var maxLap = recordList.maxBy { it.recordTime == maxRecordTime }.lap
+                                var minLap = recordList.minBy { it.recordTime == maxRecordTime }.lap
+                                readRV()
                                 adapter?.notifyDataSetChanged()
+
+                                Log.d("로그", "max: $maxRecordTime, min: :$minRecordTime")
+                                Log.d("로그", "max: $maxLap, min: :$minLap")
                             }
 
-                            Log.d("로그", recordList.toString())
+
                         }
                     }
                     "초기화" -> {
