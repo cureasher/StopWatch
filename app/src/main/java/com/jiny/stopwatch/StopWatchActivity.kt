@@ -27,13 +27,16 @@ class StopWatchActivity : AppCompatActivity() {
     var subminute = ""
     var subseconds = ""
     var submilliseconds = ""
-
+    var adapter = StopWatchRecyclerViewAdapter(recordList)
+    lateinit var manager: LinearLayoutManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityStopwatchBinding.inflate(layoutInflater).also {
             setContentView(it.root)
         }
+        manager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, true)
         with(binding) {
+            readRV()
             startAndStopBT.setOnClickListener {
                 isRunning = !isRunning
                 if (isRunning) start() else pause()
@@ -55,12 +58,17 @@ class StopWatchActivity : AppCompatActivity() {
                     }
                     "초기화" -> {
                         time = 0
+                        lap = 1
                         allTimeHourTV.text = "00"
                         allTimeMinuteTV.text = ":00"
                         allTimeSecondTV.text = ".00"
+                        allTimeMilliSecondTV.text = ".00"
                         recordTimeHourTV.text = "00"
                         recordTimeMinuteTV.text = ":00"
                         recordTimeSecondTV.text = ".00"
+                        timerTask?.cancel()
+                        recordList.clear()
+                        readRV()
                     }
                 }
             }
@@ -85,20 +93,22 @@ class StopWatchActivity : AppCompatActivity() {
             val submillisecondTime = time % 100 // 1밀리초
 
             // 전체시간
-            hour = String.format("%02d", hourTime)
-            minute = String.format("%02d", minuteTime)
-            seconds = String.format("%02d", secondTime)
-            milliseconds = String.format("%02d", millisecondTime)
+            hour = timeFormat(hourTime)
+            minute = timeFormat(minuteTime)
+            seconds = timeFormat(secondTime)
+            milliseconds = timeFormat(millisecondTime)
 
             // 부분시간
-            subhour = String.format("%02d", subHourTime)
-            subminute = String.format("%02d", subMinuteTime)
-            subseconds = String.format("%02d", subSecondTime)
-            submilliseconds = String.format("%02d", submillisecondTime)
+            subhour = timeFormat(subHourTime)
+            subminute = timeFormat(subMinuteTime)
+            subseconds = timeFormat(subSecondTime)
+            submilliseconds = timeFormat(submillisecondTime)
 
+            // 전역 변수 리스트에 담을
             recordTime = "$hour:$minute:$seconds.$milliseconds"
             subRecordTime = "$subhour:$subminute.$subseconds.$submilliseconds"
 
+            // UI 변경 코드
             runOnUiThread {
                 with(binding) {
                     allTimeHourTV.text = hour
@@ -122,7 +132,11 @@ class StopWatchActivity : AppCompatActivity() {
 
     private fun currentTapTime() {
         recordList.add(TimeRecordVO(lap++, subRecordTime, recordTime))
-        val manager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
+    }
+
+    private fun timeFormat(time: Int) = String.format("%02d", time)
+
+    private fun readRV() {
         with(binding.stopWatchRV) {
             layoutManager = manager
             adapter = StopWatchRecyclerViewAdapter(recordList)
