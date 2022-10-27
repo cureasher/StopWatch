@@ -30,22 +30,18 @@ class StopWatchRecyclerViewAdapter(private val recordList: MutableList<TimeRecor
             allTimeTV.text = recordList.allTime
         }
 
-        if (this.recordList.size > 3) {
-            val maxRecordTime =
-                this.recordList.maxBy(TimeRecordVO::recordTime)!!.recordTime
-            val minRecordTime =
-                this.recordList.minBy(TimeRecordVO::recordTime)!!.recordTime
-            var maxLap = this.recordList.maxBy { it.recordTime == maxRecordTime }.lap
-            var minLap = this.recordList.minBy { it.recordTime == minRecordTime }.lap
-            when (this.recordList[position].lap) {
-                maxLap -> {
+        if (this.recordList.size > 2) {
+            val maxRecordTime = this.recordList.maxBy(TimeRecordVO::recordTime)!!.recordTime
+            val minRecordTime = this.recordList.minBy(TimeRecordVO::recordTime)!!.recordTime
+            when (this.recordList[position].recordTime) {
+                maxRecordTime -> {
                     with(holder.binding) {
                         lapTV.setTextColor(Color.RED)
                         recordValueTV.setTextColor(Color.RED)
                         allTimeTV.setTextColor(Color.RED)
                     }
                 }
-                minLap -> {
+                minRecordTime -> {
                     with(holder.binding) {
                         lapTV.setTextColor(Color.BLUE)
                         recordValueTV.setTextColor(Color.BLUE)

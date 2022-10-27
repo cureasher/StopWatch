@@ -61,8 +61,6 @@ class StopWatchActivity : AppCompatActivity() {
                                 Log.d("로그", "max: $maxRecordTime, min: :$minRecordTime")
                                 Log.d("로그", "max: $maxLap, min: :$minLap")
                             }
-
-
                         }
                     }
                     "초기화" -> {
